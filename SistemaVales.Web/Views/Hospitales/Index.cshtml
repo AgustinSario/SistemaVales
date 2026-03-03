@@ -1,0 +1,63 @@
+@model IEnumerable<SistemaVales.Models.Hospital>
+
+@{
+    ViewData["Title"] = "Listado de Hospitales";
+}
+
+<div class="card mb-5 mb-xl-8">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Listado de Hospitales</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">@Model.Count() hospitales registrados</span>
+        </h3>
+        <div class="card-toolbar">
+            <a asp-action="Create" class="btn btn-sm btn-light-primary btn-primary">
+                <i class="bi bi-plus-square"></i> Nuevo Hospital
+            </a>
+        </div>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table align-middle gs-0 gy-4">
+                <thead>
+                    <tr class="fw-bold text-muted bg-light">
+                        <th class="ps-4 min-w-200px rounded-start">Nombre</th>
+                        <th class="min-w-200px">Dirección</th>
+                        <th class="min-w-125px">Teléfono</th>
+                        <th class="min-w-125px">Ciudad</th>
+                        <th class="min-w-150px text-end rounded-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                    <tr>
+                        <td class="ps-4">
+                            <span class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">@item.Nombre</span>
+                        </td>
+                        <td>
+                            <span class="text-muted fw-semibold text-muted d-block fs-7">@item.Direccion</span>
+                        </td>
+                        <td>
+                            <span class="text-muted fw-semibold text-muted d-block fs-7">@item.Telefono</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-light-info fs-7 fw-bold">@item.Ciudad</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 btn-warning text-white" title="Editar">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 btn-info text-white" title="Detalles">
+                                <i class="bi bi-eye"></i> Detalles
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm btn-danger text-white" title="Eliminar">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

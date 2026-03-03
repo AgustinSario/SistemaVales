@@ -1,0 +1,53 @@
+@model SistemaVales.Models.Vale
+
+@{
+    ViewData["Title"] = "Generar Vale";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer pt-5">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0"><i class="bi bi-cash-coin text-success fs-2 me-2"></i> Emisión de Vale para Expediente #@ViewBag.ExpedienteId</h3>
+        </div>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        <div class="alert alert-dismissible bg-light-info d-flex flex-column flex-sm-row p-5 mb-10">
+            <i class="bi bi-info-circle-fill fs-2hx text-info me-4 mb-5 mb-sm-0"></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h4 class="mb-2 text-info">Información Importante</h4>
+                <span>Verifique cuidadosamente el monto asignado antes de emitir el vale. Una vez emitido e impreso, el vale no podrá modificarse.</span>
+            </div>
+        </div>
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+            
+            <input type="hidden" asp-for="ExpedienteId" value="@ViewBag.ExpedienteId" />
+
+            <div class="row mb-6">
+                <label asp-for="MedicamentoId" class="col-lg-3 col-form-label required fw-semibold fs-6">Medicamento Recetado</label>
+                <div class="col-lg-5">
+                    <select asp-for="MedicamentoId" class="form-select form-select-solid" asp-items="ViewBag.Medicamentos"></select>
+                    <span asp-validation-for="MedicamentoId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="Monto" class="col-lg-3 col-form-label required fw-semibold fs-6">Monto Autorizado ($)</label>
+                <div class="col-lg-5">
+                    <div class="input-group input-group-solid mb-5">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="Monto" class="form-control form-control-solid" type="number" step="0.01" placeholder="Ej: 5500.00" />
+                    </div>
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0 mt-5">
+                <a asp-controller="Expedientes" asp-action="Index" class="btn btn-light btn-active-light-primary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-success"><i class="bi bi-printer me-1"></i> Generar e Imprimir Vale</button>
+            </div>
+        </form>
+    </div>
+</div>

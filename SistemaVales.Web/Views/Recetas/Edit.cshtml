@@ -1,0 +1,107 @@
+@model SistemaVales.Models.Receta
+
+@{
+    ViewData["Title"] = "Editar Receta";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer pt-5">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0"><i class="bi bi-pencil-square text-primary fs-2 me-2"></i> Editar Receta</h3>
+        </div>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImagenUrl" />
+            <input type="hidden" asp-for="FechaCreacion" />
+            
+            <div class="row mb-6">
+                <label asp-for="DNI" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                <div class="col-lg-8">
+                    <input asp-for="DNI" class="form-control form-control-lg form-control-solid" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="MontoTotal" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                <div class="col-lg-8">
+                    <div class="input-group input-group-solid input-group-lg">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="MontoTotal" class="form-control" />
+                    </div>
+                    <span asp-validation-for="MontoTotal" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="EsAsistenciaComunidad" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+                <div class="col-lg-8 d-flex align-items-center">
+                    <div class="form-check form-check-solid form-switch fv-row">
+                        <input asp-for="EsAsistenciaComunidad" class="form-check-input w-45px h-30px" type="checkbox" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="InformeSocialEconomico" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                <div class="col-lg-8">
+                    <textarea asp-for="InformeSocialEconomico" class="form-control form-control-lg form-control-solid" rows="3"></textarea>
+                    <span asp-validation-for="InformeSocialEconomico" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="TieneObraSocial" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+                <div class="col-lg-8 d-flex align-items-center">
+                    <div class="form-check form-check-solid form-switch fv-row">
+                        <input asp-for="TieneObraSocial" class="form-check-input w-45px h-30px" type="checkbox" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="AnalisisClinicos" class="col-lg-4 col-form-label fw-semibold fs-6"></label>
+                <div class="col-lg-8">
+                    <textarea asp-for="AnalisisClinicos" class="form-control form-control-lg form-control-solid" rows="2"></textarea>
+                    <span asp-validation-for="AnalisisClinicos" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="PacienteId" class="col-lg-4 col-form-label required fw-semibold fs-6">Paciente</label>
+                <div class="col-lg-8">
+                    <select asp-for="PacienteId" class="form-select form-select-lg form-select-solid" asp-items="ViewBag.PacienteId"></select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="HospitalId" class="col-lg-4 col-form-label required fw-semibold fs-6">Hospital</label>
+                <div class="col-lg-8">
+                    <select asp-for="HospitalId" class="form-select form-select-lg form-select-solid" asp-items="ViewBag.HospitalId"></select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-semibold fs-6">Imagen de la Receta</label>
+                <div class="col-lg-8">
+                    @if (!string.IsNullOrEmpty(Model.ImagenUrl)) {
+                        <div class="mb-3">
+                            <img src="@Model.ImagenUrl" class="img-thumbnail" style="max-height: 200px;" />
+                        </div>
+                    }
+                    <input type="file" name="imagenFile" class="form-control form-control-lg form-control-solid" accept="image/*" />
+                    <div class="form-text">Si desea cambiar la imagen, adjunte un nuevo archivo.</div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0 mt-5">
+                <a asp-action="Index" class="btn btn-light btn-active-light-primary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

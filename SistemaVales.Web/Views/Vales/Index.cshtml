@@ -1,0 +1,112 @@
+@model IEnumerable<SistemaVales.Models.Vale>
+
+@{
+    ViewData["Title"] = "Gestión de Vales";
+}
+
+<div class="card mb-5 mb-xl-8">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Control de Vales</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Ciclo de vida: Iniciado > Proceso > Entregado</span>
+        </h3>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table align-middle gs-0 gy-4">
+                <thead>
+                    <tr class="fw-bold text-muted bg-light">
+                        <th class="ps-4 min-w-150px rounded-start">Nro Vale / Fecha</th>
+                        <th class="min-w-150px">Paciente / Medicamento</th>
+                        <th class="min-w-100px">Monto</th>
+                        <th class="min-w-120px">Estado</th>
+                        <th class="min-w-200px text-end rounded-end pe-4">Gestión de Ciclo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                    <tr>
+                        <td class="ps-4">
+                            <span class="text-dark fw-bold text-hover-primary mb-1 fs-6">#@item.NumeroVale</span>
+                            <span class="text-muted fw-semibold d-block fs-7">@item.FechaEmision.ToString("dd/MM/yyyy")</span>
+                        </td>
+                        <td>
+                            <span class="text-dark fw-bold d-block fs-6">@item.Expediente?.Paciente?.Nombre</span>
+                            <span class="text-muted fw-semibold d-block fs-7">@item.Medicamento?.Nombre</span>
+                        </td>
+                        <td>
+                            <span class="text-dark fw-bold d-block fs-6">$@item.Monto</span>
+                        </td>
+                        <td>
+                            @if (item.Estado == "Iniciado")
+                            {
+                                <span class="badge badge-light-warning px-3 py-2">Iniciado</span>
+                            }
+                            else if (item.Estado == "Proceso")
+                            {
+                                <span class="badge badge-light-info px-3 py-2">En Proceso</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-light-success px-3 py-2">Entregado</span>
+                                @if (!string.IsNullOrEmpty(item.EntregadoPor))
+                                {
+                                    <small class="d-block text-muted mt-1">Por: @item.EntregadoPor</small>
+                                }
+                            }
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" title="Ver QR y Detalles">
+                                    <i class="bi bi-eye-fill fs-3"></i>
+                                </a>
+
+                                @if (item.Estado == "Iniciado")
+                                {
+                                    <form asp-action="IniciarProceso" asp-route-id="@item.Id" method="post">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-arrow-right-circle me-1"></i> Iniciar Proceso
+                                        </button>
+                                    </form>
+                                }
+                                else if (item.Estado == "Proceso")
+                                {
+                                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#entregarModal-@item.Id">
+                                        <i class="bi bi-box-seam me-1"></i> Entregar
+                                    </button>
+
+                                    <!-- Modal Entregar -->
+                                    <div class="modal fade" id="entregarModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <form asp-action="Entregar" method="post">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Confirmar Entrega de Medicamento</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <p>Está por marcar el vale <strong>#@item.NumeroVale</strong> como entregado.</p>
+                                                        <div class="mb-3">
+                                                            <label class="form-label required">Nombre del Responsable que Entrega</label>
+                                                            <input type="text" name="entregadoPor" class="form-control" required placeholder="Ej: Farmacéutico Juan Perez" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-success">Confirmar Entrega</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

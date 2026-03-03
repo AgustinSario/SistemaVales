@@ -1,0 +1,116 @@
+@model SistemaVales.Models.Expediente
+
+@{
+    ViewData["Title"] = "Realizar Informe Técnico";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Informe Técnico de Farmacia</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Expediente: @Model.NumeroExpediente</span>
+        </h3>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        @if(Model.Estado == "Desfavorable") {
+            <div class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row p-5 mb-10">
+                <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4 mb-5 mb-sm-0"></i>
+                <div class="d-flex flex-column pe-0 pe-sm-10">
+                    <h4 class="mb-1 text-danger">Expediente Devuelto</h4>
+                    <span>La Auditoría Médica (Dr. Manuel Rodriguez) ha devuelto este expediente como **Desfavorable**. Por favor revise y procese nuevamente.</span>
+                </div>
+            </div>
+        }
+
+        <div class="row mb-10">
+            <div class="col-md-6">
+                <h5 class="fw-bold mb-4">Datos del Paciente</h5>
+                <p class="mb-1"><strong>Nombre:</strong> @Model.Paciente?.Nombre</p>
+                <p class="mb-1"><strong>DNI:</strong> @Model.Paciente?.DNI</p>
+                <p class="mb-1"><strong>Obra Social:</strong> @(Model.Receta?.TieneObraSocial == true ? "SÍ" : "NO")</p>
+            </div>
+            <div class="col-md-6">
+                <h5 class="fw-bold mb-4">Datos de la Receta</h5>
+                <p class="mb-1"><strong>Monto Estimado:</strong> @Model.Receta?.MontoTotal.ToString("C")</p>
+                <p class="mb-1"><strong>Origen:</strong> @(Model.Receta?.EsAsistenciaComunidad == true ? "Asistencia Comunidad" : "Normal")</p>
+            </div>
+        </div>
+
+        <form asp-action="ProcesarInforme" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-semibold fs-6">¿Cumple Formulario Terapéutico?</label>
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center mt-3">
+                        <label class="form-check form-check-custom form-check-solid me-10">
+                            <input class="form-check-input" type="radio" name="cumpleFormulario" value="true" checked onchange="toggleOT(true)" />
+                            <span class="form-check-label fw-bold">SÍ</span>
+                        </label>
+                        <label class="form-check form-check-custom form-check-solid">
+                            <input class="form-check-input" type="radio" name="cumpleFormulario" value="false" onchange="toggleOT(false)" />
+                            <span class="form-check-label fw-bold text-danger">NO</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6" id="sectionOT">
+                <label class="col-lg-4 col-form-label fw-semibold fs-6">Informe O.T. (Oficina Técnica)</label>
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center mt-3">
+                        <label class="form-check form-check-custom form-check-solid me-10">
+                            <input class="form-check-input" type="radio" name="informeOT" value="true" checked />
+                            <span class="form-check-label fw-bold">Favorable</span>
+                        </label>
+                        <label class="form-check form-check-custom form-check-solid">
+                            <input class="form-check-input" type="radio" name="informeOT" value="false" />
+                            <span class="form-check-label fw-bold">No Favorable</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-semibold fs-6">Observaciones</label>
+                <div class="col-lg-8">
+                    <textarea name="observaciones" class="form-control form-control-solid" rows="3" placeholder="Ingrese detalles técnicos...">@Model.ObservacionesFarmacia</textarea>
+                </div>
+            </div>
+
+            @if(Model.Receta?.MontoTotal > 300000) {
+                <div class="alert alert-warning d-flex align-items-center p-5 mb-10">
+                    <i class="bi bi-cart-plus fs-2hx text-warning me-4"></i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-warning">Monto > $300,000</h4>
+                        <span>Este expediente será derivado para su gestión en el Sistema de Compras externo tras la aprobación.</span>
+                    </div>
+                </div>
+            }
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0 mt-5">
+                <a asp-action="Index" class="btn btn-light btn-active-light-primary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-primary" id="btnSubmit">
+                    <i class="bi bi-send-check me-2"></i> <span id="btnText">Enviar a Compras / Validar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleOT(cumple) {
+        const section = document.getElementById('sectionOT');
+        const btnText = document.getElementById('btnText');
+        if (cumple) {
+            section.style.display = 'flex';
+            btnText.innerText = 'Enviar a Compras / Validar';
+        } else {
+            section.style.display = 'none';
+            btnText.innerText = 'Enviar a Auditoría Médica';
+        }
+    }
+    // Setup initial state
+    toggleOT(true);
+</script>

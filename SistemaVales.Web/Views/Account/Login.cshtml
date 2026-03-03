@@ -1,0 +1,190 @@
+@model SistemaVales.Web.Controllers.LoginViewModel
+@{
+    Layout = null; // No layout for login page to have full control
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sistema de Vales</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --corrientes-green: #71C043;
+            --corrientes-dark: #1A1A1A;
+            --premium-bg: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--premium-bg);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: none;
+        }
+
+        .login-header {
+            background-color: var(--corrientes-green);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .branding-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 0.5rem;
+        }
+
+        .gov-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+
+        .provincia-name {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .ministerio-pill {
+            background: white;
+            color: black;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .login-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #E0E0E0;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(113, 192, 67, 0.15);
+            border-color: var(--corrientes-green);
+        }
+
+        .btn-login {
+            background-color: var(--corrientes-green);
+            border: none;
+            padding: 0.75rem;
+            font-weight: 700;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-login:hover {
+            background-color: #5FA536;
+            transform: translateY(-1px);
+        }
+
+        .text-danger {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .valid-summary {
+            background: #FFF5F5;
+            border: 1px solid #FFEBEB;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .valid-summary ul {
+            margin: 0;
+            padding-left: 1.2rem;
+            font-size: 0.85rem;
+            color: #C53030;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="branding-banner">
+                <div class="provincia-name">Corrientes</div>
+            </div>
+            <div class="ministerio-pill">Ministerio de Salud Pública</div>
+        </div>
+        <div class="login-body">
+            <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+                {
+                    <div class="valid-summary">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Correo Electrónico</label>
+                    <input asp-for="Email" class="form-control" placeholder="admin@sistemavales.com" autocomplete="username" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Contraseña</label>
+                    <input asp-for="Password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label" style="font-size: 0.85rem; color: #666;">Recordarme</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login">INGRESAR AL SISTEMA</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

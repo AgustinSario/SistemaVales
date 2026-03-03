@@ -1,0 +1,80 @@
+@model SistemaVales.Models.Vale
+
+@{
+    var expediente = ViewBag.Expediente as SistemaVales.Models.Expediente;
+    ViewData["Title"] = "Generar Vale desde Expediente";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Generar Vale de Medicamentos</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Expediente: @expediente?.NumeroExpediente</span>
+        </h3>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        <div class="alert alert-dismissible bg-light-success d-flex flex-column flex-sm-row p-5 mb-10">
+            <i class="bi bi-check-circle fs-2hx text-success me-4 mb-5 mb-sm-0"></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h4 class="mb-2 text-success">Expediente Aprobado</h4>
+                <span>El expediente ha cumplido con todos los requisitos técnicos y legales. Proceda a emitir el vale.</span>
+            </div>
+        </div>
+
+        <form asp-action="GenerarDesdeExpediente">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+            <input type="hidden" name="expedienteId" value="@expediente?.Id" />
+            
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-semibold fs-6">Seleccionar Medicamento</label>
+                <div class="col-lg-8">
+                    <select name="medicamentoId" class="form-select form-select-solid form-select-lg" asp-items="ViewBag.Medicamentos" required>
+                        <option value="">Seleccione un medicamento...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="Monto" class="col-lg-4 col-form-label required fw-semibold fs-6"></label>
+                <div class="col-lg-8">
+                    <div class="input-group input-group-solid input-group-lg">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="Monto" class="form-control" placeholder="0.00" />
+                    </div>
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0 mt-5">
+                <a asp-controller="Expedientes" asp-action="Workflow" asp-route-id="@expediente?.Id" class="btn btn-light btn-active-light-primary me-2">Volver al Flujo</a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-ticket-perforated me-2"></i> Confirmar y Generar Vale
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Pre-cargar precios de medicamentos
+        const medPrecios = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ((IEnumerable<SistemaVales.Models.Medicamento>)(ViewBag.MedicamentosOriginal ?? new List<SistemaVales.Models.Medicamento>()))
+            .ToDictionary(m => m.Id.ToString(), m => m.MontoEstimado)
+        ));
+
+        document.querySelector('select[name="medicamentoId"]').addEventListener('change', function() {
+            const medId = this.value;
+            const montoInput = document.getElementById('Monto');
+            
+            if (medId && medPrecios[medId]) {
+                montoInput.value = medPrecios[medId].toFixed(2);
+                montoInput.classList.add('bg-light-success');
+                setTimeout(() => montoInput.classList.remove('bg-light-success'), 1000);
+            } else {
+                montoInput.value = "0.00";
+            }
+        });
+    </script>
+}

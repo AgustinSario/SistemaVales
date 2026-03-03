@@ -1,0 +1,68 @@
+@model IEnumerable<SistemaVales.Models.Expediente>
+
+@{
+    ViewData["Title"] = "Listado de Expedientes";
+}
+
+<div class="card mb-5 mb-xl-8">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Listado de Expedientes</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">@Model.Count() expedientes activos</span>
+        </h3>
+        <div class="card-toolbar">
+            <a asp-action="Create" class="btn btn-sm btn-light-primary btn-primary">
+                <i class="bi bi-folder-plus"></i> Nuevo Expediente
+            </a>
+        </div>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table align-middle gs-0 gy-4">
+                <thead>
+                    <tr class="fw-bold text-muted bg-light">
+                        <th class="ps-4 min-w-150px rounded-start">Nro. Expediente</th>
+                        <th class="min-w-150px">Paciente</th>
+                        <th class="min-w-150px">Estado Actual</th>
+                        <th class="min-w-100px text-end rounded-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                    <tr>
+                        <td class="ps-4">
+                            <span class="text-dark fw-bold text-hover-primary d-block fs-6">@item.NumeroExpediente</span>
+                            <span class="text-muted fw-semibold d-block fs-7">@item.FechaInicio.ToShortDateString()</span>
+                        </td>
+                        <td>
+                            <span class="text-dark fw-bold d-block fs-6">@item.Paciente?.Nombre</span>
+                        </td>
+                        <td>
+                            @{
+                                var badgeClass = item.Estado switch {
+                                    "Iniciado" => "badge-light-primary",
+                                    "PendienteInformeTecnico" => "badge-light-warning",
+                                    "EnAuditoria" => "badge-light-danger",
+                                    "EnCompras" => "badge-light-info",
+                                    "ValeGenerado" => "badge-light-success",
+                                    "Desfavorable" => "badge-light-dark",
+                                    _ => "badge-light-secondary"
+                                };
+                            }
+                            <span class="badge @badgeClass fs-7 fw-bold">@item.Estado</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a asp-action="Workflow" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" title="Gestionar Flujo">
+                                <i class="bi bi-diagram-3-fill fs-3 text-primary"></i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm">
+                                <i class="bi bi-eye-fill fs-3 text-gray-500"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

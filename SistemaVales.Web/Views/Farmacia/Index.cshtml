@@ -1,0 +1,65 @@
+@model IEnumerable<SistemaVales.Models.Expediente>
+
+@{
+    ViewData["Title"] = "Bandeja de Farmacia";
+}
+
+<div class="card mb-5 mb-xl-8">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Bandeja de Informes Técnicos</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">@Model.Count() expedientes requiriendo atención</span>
+        </h3>
+    </div>
+    <div class="card-body py-3">
+        <div class="table-responsive">
+            <table class="table align-middle gs-0 gy-4">
+                <thead>
+                    <tr class="fw-bold text-muted bg-light">
+                        <th class="ps-4 min-w-150px rounded-start">Expediente</th>
+                        <th class="min-w-150px">Paciente</th>
+                        <th class="min-w-125px">Estado</th>
+                        <th class="min-w-150px">Monto Receta</th>
+                        <th class="min-w-100px text-end rounded-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td class="ps-4">
+                                <span class="text-dark fw-bold text-hover-primary d-block mb-1 fs-6">@item.NumeroExpediente</span>
+                                <span class="text-muted fw-semibold d-block fs-7">@item.FechaInicio.ToShortDateString()</span>
+                            </td>
+                            <td>
+                                <span class="text-dark fw-bold d-block fs-6">@item.Paciente?.Nombre</span>
+                                <span class="text-muted fw-semibold d-block fs-7">DNI: @item.Paciente?.DNI</span>
+                            </td>
+                            <td>
+                                @{
+                                    var badgeClass = item.Estado == "Desfavorable" ? "badge-light-danger" : "badge-light-primary";
+                                    var label = item.Estado == "Desfavorable" ? "DEVUELTO / RECHAZADO" : "PENDIENTE";
+                                }
+                                <span class="badge @badgeClass fs-7 fw-bold">@label</span>
+                            </td>
+                            <td>
+                                <span class="text-dark fw-bold d-block fs-6">@item.Receta?.MontoTotal.ToString("C")</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Informe" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-file-earmark-plus me-1"></i> Realizar Informe
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any()) {
+                        <tr>
+                            <td colspan="5" class="text-center py-10">
+                                <span class="text-muted fs-6 italic">No hay expedientes pendientes de informe técnico.</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

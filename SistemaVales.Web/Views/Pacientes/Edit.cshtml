@@ -1,0 +1,67 @@
+@model SistemaVales.Models.Paciente
+
+@{
+    ViewData["Title"] = "Editar Paciente";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0"><i class="bi bi-pencil-square text-warning fs-2 me-2"></i> Editar Datos de: @Model.Nombre</h3>
+        </div>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="row mb-6">
+                <label asp-for="Nombre" class="col-lg-2 col-form-label required fw-semibold fs-6">Nombre Completo</label>
+                <div class="col-lg-8">
+                    <input asp-for="Nombre" class="form-control form-control-lg form-control-solid" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="row mb-6">
+                <label asp-for="DNI" class="col-lg-2 col-form-label required fw-semibold fs-6">DNI</label>
+                <div class="col-lg-8">
+                    <input asp-for="DNI" class="form-control form-control-lg form-control-solid" />
+                    <span asp-validation-for="DNI" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="Direccion" class="col-lg-2 col-form-label required fw-semibold fs-6">Dirección</label>
+                <div class="col-lg-8">
+                    <input asp-for="Direccion" class="form-control form-control-lg form-control-solid" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label asp-for="Telefono" class="col-lg-2 col-form-label required fw-semibold fs-6">Teléfono</label>
+                <div class="col-lg-8">
+                    <input asp-for="Telefono" class="form-control form-control-lg form-control-solid" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-0">
+                <label asp-for="HospitalId" class="col-lg-2 col-form-label required fw-semibold fs-6">Hospital de Atención</label>
+                <div class="col-lg-8">
+                    <select asp-for="HospitalId" asp-items="@ViewBag.Hospitales" class="form-select form-select-lg form-select-solid">
+                        <option value="">-- Seleccionar Hospital --</option>
+                    </select>
+                    <span asp-validation-for="HospitalId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0">
+                <a asp-action="Index" class="btn btn-light btn-active-light-primary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-warning"><i class="bi bi-save me-1"></i> Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

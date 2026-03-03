@@ -1,0 +1,168 @@
+@model SistemaVales.Models.Expediente
+
+@{
+    ViewData["Title"] = "Flujo de Expediente";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold fs-3 mb-1">Expediente: @Model.NumeroExpediente</span>
+            <span class="text-muted mt-1 fw-semibold fs-7">Estado actual: <span class="badge badge-light-primary px-3 py-2">@Model.Estado</span></span>
+        </h3>
+    </div>
+    
+    <div class="card-body p-9">
+        <!-- Barra de Progreso -->
+        <div class="d-flex flex-stack flex-wrap mb-10">
+            <div class="d-flex align-items-center me-3">
+                <div class="symbol symbol-40px symbol-circle me-4">
+                    <div class="symbol-label @(Model.Estado != "Iniciado" ? "bg-success" : "bg-primary")">
+                        <i class="bi bi-check2 text-white fs-2"></i>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="text-dark fw-bold fs-6">Paso 1</span>
+                    <span class="text-muted fw-semibold fs-7 text-uppercase">Mesa de Entrada</span>
+                </div>
+            </div>
+            <div class="h-1px w-30px bg-gray-300"></div>
+            <div class="d-flex align-items-center mx-3">
+                <div class="symbol symbol-40px symbol-circle me-4">
+                    <div class="symbol-label @(Model.Estado == "PendienteInformeTecnico" ? "bg-primary" : (Model.Estado == "EnAuditoria" || Model.Estado == "EnCompras" || Model.Estado == "Favorable" || Model.Estado == "ValeGenerado" ? "bg-success" : "bg-light"))">
+                        <i class="bi bi-file-earmark-text @(Model.Estado == "PendienteInformeTecnico" || Model.Estado == "EnAuditoria" || Model.Estado == "EnCompras" || Model.Estado == "Favorable" || Model.Estado == "ValeGenerado" ? "text-white" : "text-muted") fs-2"></i>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="text-dark fw-bold fs-6">Paso 2</span>
+                    <span class="text-muted fw-semibold fs-7 text-uppercase">Informe Farmacia</span>
+                </div>
+            </div>
+            <div class="h-1px w-30px bg-gray-300"></div>
+            @if(Model.Estado == "EnAuditoria" || Model.ResultadoAuditoria != null) {
+                <div class="d-flex align-items-center mx-3">
+                    <div class="symbol symbol-40px symbol-circle me-4">
+                        <div class="symbol-label @(Model.Estado == "EnAuditoria" ? "bg-primary" : "bg-success")">
+                            <i class="bi bi-shield-check text-white fs-2"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="text-dark fw-bold fs-6">Paso 3 (Opcional)</span>
+                        <span class="text-muted fw-semibold fs-7 text-uppercase">Auditoría Médica</span>
+                    </div>
+                </div>
+                <div class="h-1px w-30px bg-gray-300"></div>
+            }
+            <div class="d-flex align-items-center ms-3">
+                <div class="symbol symbol-40px symbol-circle me-4">
+                    <div class="symbol-label @(Model.Estado == "EnCompras" || Model.Estado == "Favorable" ? "bg-primary" : (Model.Estado == "ValeGenerado" ? "bg-success" : "bg-light"))">
+                        <i class="bi bi-cart @(Model.Estado == "EnCompras" || Model.Estado == "Favorable" || Model.Estado == "ValeGenerado" ? "text-white" : "text-muted") fs-2"></i>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="text-dark fw-bold fs-6">Paso Final</span>
+                    <span class="text-muted fw-semibold fs-7 text-uppercase">Compras / Vale</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator separator-dashed my-10"></div>
+
+        <!-- PASO 2: INFORME TÉCNICO DE FARMACIA -->
+        @if(Model.Estado == "PendienteInformeTecnico" || Model.Estado == "Desfavorable") {
+            <div class="mb-10 text-center">
+                <h4 class="fw-bold mb-5"><i class="bi bi-prescription2 text-primary fs-2 me-2"></i> Paso 2: Informe Técnico de Farmacia</h4>
+                
+                @if(Model.Estado == "Desfavorable") {
+                    <div class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row p-5 mb-10 text-start">
+                        <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4 mb-5 mb-sm-0"></i>
+                        <div class="d-flex flex-column pe-0 pe-sm-10">
+                            <h4 class="mb-1 text-danger">Requerimiento Devuelto por Auditoría</h4>
+                            <span>La Auditoría Médica ha marcado este expediente como **Desfavorable**. Por favor, revise las observaciones y procese nuevamente en el módulo de Farmacia.</span>
+                        </div>
+                    </div>
+                }
+
+                <div class="bg-light-info p-8 rounded mb-7">
+                    <div class="fs-4 text-gray-800 fw-bold mb-2">Gestión Técnica Requerida</div>
+                    <div class="fs-6 text-gray-700 mb-5">Se debe realizar el análisis del Formulario Terapéutico y el Informe O.T. para este expediente.</div>
+                    <a asp-controller="Farmacia" asp-action="Informe" asp-route-id="@Model.Id" class="btn btn-primary btn-lg">
+                        <i class="bi bi-capsule-pill me-2"></i> Gestionar en Farmacia
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- PASO 3: AUDITORÍA MÉDICA -->
+        @if(Model.Estado == "EnAuditoria") {
+            <div class="mb-10">
+                <h4 class="fw-bold mb-5 text-warning"><i class="bi bi-shield-exclamation text-warning fs-2 me-2"></i> Auditoría Médica - Dr. Manuel Rodriguez (G H C I S)</h4>
+                <div class="bg-light-warning p-5 rounded mb-7">
+                    <div class="fs-6 text-gray-800">El informe técnico de farmacia resultó **desfavorable** o requiere validación médica.</div>
+                    <div class="mt-2 text-muted italic">Observaciones de farmacia: @Model.ObservacionesFarmacia</div>
+                </div>
+
+                <form asp-action="ProcesarAuditoriaMedica" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-flex gap-4">
+                        <button type="submit" name="resultado" value="Favorable" class="btn btn-success flex-grow-1">
+                            <i class="bi bi-send me-2"></i> Enviar a Compras (FAVORABLE)
+                        </button>
+                        <button type="submit" name="resultado" value="Desfavorable" class="btn btn-danger flex-grow-1">
+                            <i class="bi bi-reply me-2"></i> Devolver a Farmacia (DESFAVORABLE)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+
+        <!-- ESTADOS FINALES -->
+        @if(Model.Estado == "EnCompras" || Model.Estado == "Favorable") {
+            <div class="text-center py-10">
+                <div class="symbol symbol-100px mb-5">
+                    <div class="symbol-label bg-light-success">
+                        <i class="bi bi-check-circle-fill text-success fs-3x"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-dark">Expediente con Resultado Favorable</h3>
+                <p class="text-muted fs-5">El expediente ha sido aprobado y está listo para la gestión final.</p>
+                <div class="mt-8 bg-light-primary p-10 rounded">
+                    <h4 class="mb-5">Paso Final: Compras / Vale</h4>
+                    @if(Model.Receta?.MontoTotal <= 300000) {
+                        <a asp-controller="Vales" asp-action="GenerarDesdeExpediente" asp-route-id="@Model.Id" class="btn btn-primary btn-lg px-10">
+                            <i class="bi bi-ticket-perforated me-2 fs-2"></i> Generar Vale
+                        </a>
+                    } else {
+                        <div class="alert alert-info d-inline-block px-10">
+                            <i class="bi bi-cart-check fs-2 me-3"></i> 
+                            <span class="fw-bold">Expediente enviado a Sistema de Compras Externo (> $300,000)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(Model.Estado == "Desfavorable") {
+            <div class="text-center py-10">
+                <i class="bi bi-x-circle text-danger fs-5x mb-5"></i>
+                <h3 class="fw-bold text-dark">Informe Negativo - Desfavorable</h3>
+                <p class="text-muted fs-5">La auditoría médica ha determinado que la solicitud no es procedente.</p>
+                <div class="mt-8">
+                    <a asp-action="Index" class="btn btn-light btn-sm">Volver al Listado</a>
+                </div>
+            </div>
+        }
+
+        @if(Model.Estado == "ValeGenerado") {
+             <div class="text-center py-10">
+                <i class="bi bi-check-circle text-success fs-5x mb-5"></i>
+                <h3 class="fw-bold text-dark">Vale Generado Exitosamente</h3>
+                <p class="text-muted fs-5">El proceso ha finalizado con la creación del vale de medicamentos.</p>
+                <div class="mt-8">
+                    <a asp-controller="Vales" asp-action="Index" class="btn btn-success px-10">Ver Vales</a>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

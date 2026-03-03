@@ -1,0 +1,52 @@
+@model SistemaVales.Models.Medicamento
+
+@{
+    ViewData["Title"] = "Eliminar Medicamento";
+}
+
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer pt-5">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0 text-danger"><i class="bi bi-exclamation-triangle-fill text-danger fs-2 me-2"></i> Eliminar Medicamento</h3>
+        </div>
+    </div>
+    
+    <div class="card-body border-top p-9">
+        <div class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row p-5 mb-10">
+            <i class="bi bi-shield-slash fs-2hx text-danger me-4 mb-5 mb-sm-0"></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h4 class="mb-2 text-danger">Confirmación de Eliminación</h4>
+                <span>¿Está seguro que desea eliminar el registro de <strong>@Model.Nombre</strong>? Esta acción no se puede deshacer.</span>
+            </div>
+        </div>
+
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">Nombre</label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@Model.Nombre</span>
+            </div>
+        </div>
+
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">Descripción</label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@Model.Descripcion</span>
+            </div>
+        </div>
+
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">Cantidad / Unidad</label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@Model.Cantidad @Model.Unidad</span>
+            </div>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="card-footer d-flex justify-content-end py-6 px-9 bg-transparent border-0">
+                <a asp-action="Index" class="btn btn-light btn-active-light-primary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar Definitivamente</button>
+            </div>
+        </form>
+    </div>
+</div>
