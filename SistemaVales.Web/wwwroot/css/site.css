@@ -161,6 +161,42 @@ body {
     border-top: none;
 }
 
+/* Custom Badges */
+.badge-light-primary {
+    background-color: #f1faff;
+    color: var(--bs-primary) !important;
+}
+
+.badge-light-success {
+    background-color: #e8fff3;
+    color: var(--bs-success) !important;
+}
+
+.badge-light-info {
+    background-color: #f8f5ff;
+    color: var(--bs-info) !important;
+}
+
+.badge-light-warning {
+    background-color: #fff0f3;
+    color: var(--bs-warning) !important;
+}
+
+.badge-light-danger {
+    background-color: #fff5f8;
+    color: #f1416c !important;
+}
+
+.badge-light-dark {
+    background-color: #f3f6f9;
+    color: #181c32 !important;
+}
+
+.badge-light-secondary {
+    background-color: #e4e6ef;
+    color: #7e8299 !important;
+}
+
 /* Chatbot Styles */
 #chatbot-container {
     position: fixed;
