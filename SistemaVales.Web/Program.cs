@@ -28,6 +28,7 @@ builder.Services.AddScoped<SistemaVales.BLL.Services.IMedicamentoService, Sistem
 builder.Services.AddScoped<SistemaVales.BLL.Services.IRecetaService, SistemaVales.BLL.Services.RecetaService>();
 builder.Services.AddScoped<SistemaVales.BLL.Services.IPacienteService, SistemaVales.BLL.Services.PacienteService>();
 builder.Services.AddScoped<SistemaVales.BLL.Services.IHospitalService, SistemaVales.BLL.Services.HospitalService>();
+builder.Services.AddHttpClient<SistemaVales.BLL.Services.IExternalExpedienteService, SistemaVales.BLL.Services.ExternalExpedienteService>();
 
 
 var app = builder.Build();

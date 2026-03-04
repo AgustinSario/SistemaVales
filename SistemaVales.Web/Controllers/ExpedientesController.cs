@@ -12,12 +12,14 @@ public class ExpedientesController : Controller
     private readonly IExpedienteService _expedientesService;
     private readonly IPacienteService _pacienteService;
     private readonly IRecetaService _recetaService;
+    private readonly IExternalExpedienteService _externalService;
 
-    public ExpedientesController(IExpedienteService expedientesService, IPacienteService pacienteService, IRecetaService recetaService)
+    public ExpedientesController(IExpedienteService expedientesService, IPacienteService pacienteService, IRecetaService recetaService, IExternalExpedienteService externalService)
     {
         _expedientesService = expedientesService;
         _pacienteService = pacienteService;
         _recetaService = recetaService;
+        _externalService = externalService;
     }
 
     public async Task<IActionResult> Index()
@@ -71,6 +73,9 @@ public class ExpedientesController : Controller
             expediente.Receta = await _recetaService.ObtenerPorIdAsync(expediente.RecetaId.Value);
         }
 
+        // Consulta a servicio externo de Salúd Corrientes
+        ViewBag.ExternalInfo = await _externalService.ConsultarExpedienteAsync(expediente.NumeroExpediente);
+
         return View(expediente);
     }
 
@@ -118,5 +123,24 @@ public class ExpedientesController : Controller
     {
         await _expedientesService.ActualizarEstadoAsync(id, "Favorable");
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChatbotConsultar(string numero)
+    {
+        if (string.IsNullOrWhiteSpace(numero))
+        {
+            return Json(new { success = false, message = "Por favor ingrese un número de expediente válido." });
+        }
+
+        var result = await _externalService.ConsultarExpedienteAsync(numero);
+        
+        if (result == null || !string.IsNullOrEmpty(result.Error))
+        {
+            return Json(new { success = false, message = result?.Error ?? "No se pudo obtener información de este expediente." });
+        }
+
+        return Json(new { success = true, data = result });
     }
 }
